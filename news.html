@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
+		<title>新闻 | 芸星次元</title>
+		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
+		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
+		<link href="./css/preload.css" rel="stylesheet">
+		<style>header,.banner{background-repeat: no-repeat; background-attachment: fixed; background-position: center; background-size: cover;}</style>
+	</head>
+	<body>
+
+		<!-- 预加载 -->
+		<div id="preloader" class="preloader">
+			<img src="./img/preloader.png" height="64px" alt="">
+		</div>
+
+		<!-- 头部 -->
+		<nav class="navbar fixed-top bg-body">
+		    <div class="container d-flex justify-content-between">
+		        <a class="navbar-brand" href="//starfours.cn/"><img src="./img/logo.png" style="height:3rem" /></a>
+				<div class="d-flex">
+					<a class="nav-link mx-2" href="./">首页</a>
+					<a class="nav-link mx-2" href="./news.html">新闻</a>
+					<a class="nav-link mx-2" href="./contact.html">合作</a>
+				</div>
+		    </div>
+		</nav>
+		<header class="d-flex align-items-center" style="margin-top:4.5rem;background-image: url(https://s1.ax1x.com/2023/01/08/pSZkPKO.jpg);">
+		    <div class="container-md text-white px-sm-5 py-5 text-center">
+		        <h1>新闻资讯</h1>
+		        <p>News</p>
+		    </div>
+		</header>
+
+		<!-- 主体部分 -->
+		<main>
+			<div class="container mt-4 py-sm-5 d-flex justify-content-center">
+				<div class="card col-12 col-xl-8 border-0 border-top border-5 border-primary shadow">
+					<div class="list-group">
+					</div>
+					<div class="p-4 text-center" id="page" onclick="getlist()">
+						<span>下一页</span>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<!-- 尾部 -->
+		<div class="footer mt-auto py-3 bg-light">
+		    <div class="container" style="font-size:.8rem;line-height:1.2">
+		        <div class="d-flex"><img src="./img/logo.png" style="height:2rem"/><p class="fs-6 ms-2 mt-2">芸星次元</p></div>
+		        <p class="mb-2 text-muted">&copy;2015-2024 长沙芸星次元科技有限公司. All Rights Reserved.</p>
+				<p class="mb-2 text-muted">通讯地址：湖南省长沙市天心区金盆岭街道芙蓉中路三段380号&emsp;邮编：410004</p>
+			    <p class="mb-2 text-muted">商业合作邮箱：<a class="text-muted" href="mailto:bd@starfours.cn" target="_blank">bd@starfours.cn</a>&nbsp;|&nbsp;涉未成年人服务邮箱：<a class="text-muted" href="mailto:immaturity@starfours.cn" target="_blank">immaturity@starfours.cn</a></p>
+				<p class="mb-2">网上有害信息举报专区:&nbsp;<a class="text-muted" href="//wfblxx.changsha.cn" target="_blank">长沙互联网举报中心</a>&nbsp;|&nbsp;<a class="text-muted" href="//www.12377.cn" target="_blank">中国互联网违法和不良信息举报中心</a></p>
+		    </div>
+		</div>
+
+	</body>
+
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+	<script src="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+	<script>
+		// 原生js操作预加载
+		document.onreadystatechange=function(){if(document.readyState=='complete'){document.getElementById("preloader").style.display="none";getlist()}}
+		var page=0;
+		$('#page').hide()
+		function getlist(){
+			page=page+1
+			let loading=$.alert({title:'',content:'<div class="p-2 d-flex align-items-center justify-content-between"> <strong>操作正在处理</strong> <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div></div>',buttons:[],closeIcon:false});
+			$.ajax({
+				url:"https://api-public.starfours.cn/article/getlist/"+page,
+				method:"GET",
+				timeout:5000,
+				dataType:"JSON",
+				success(i) {
+					loading.close();
+					if(i.code!==200){
+						$.alert({title:'',type:'red',content:i.msg}); 
+						return;
+					}
+					let data=i.data
+					if(data.length==10){
+						$('#page').show()
+					}else{
+						$('#page').hide()
+					}
+					for(var n=0;n<data.length;n++){
+						let labal=''
+						for(var i=0;i<data[n].tags.length;i++){
+							labal=labal+'&nbsp;<span class="badge rounded-pill text-white"style="background-color:'+data[n].tags[i].color+'">'+data[n].tags[i].body+'</span>'
+						}
+						$('.list-group').append('<a class="list-group-item list-group-item-action p-4 pb-2"href="./article.html?id='+data[n].id+'"target="_blank"><h5>'+data[n].title+'</h5><p class="text-muted text-truncate">'+data[n].body+'</p><span>'+data[n].time+labal+'</span></a>')
+					}
+				},error() {
+					loading.close();
+					$.alert({title:'',type:'red',content:'获取数据失败，请稍后再试'});
+					if(page>1){
+						page=page-1
+					}
+				}
+			})
+		}
+	</script>
+</html>
