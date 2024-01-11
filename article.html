@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no">
-		<title>新闻 | 芸星次元</title>
+		<title>文章/文档 | 芸星次元</title>
 		<link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.1/css/bootstrap.min.css" rel="stylesheet">
 		<link href="https://cdn.bootcdn.net/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css" rel="stylesheet">
 		<link href="./css/preload.css" rel="stylesheet">
@@ -85,6 +85,7 @@
 					$('#tags').html(labal)
 					$('#body').html(data.body)
 					$('#title').html(data.title)
+					$("title").text(data.title+' | 芸星次元');
 				},error() {
 					loading.close();
 					$.alert({title:'',type:'red',content:'获取数据失败，请稍后再试'});
